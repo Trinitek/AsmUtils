@@ -1,4 +1,4 @@
 AsmUtils
 ========
 
-Compilation of data compressors and converters to aid in the development in 16-bit assembly programming
+Compilation of data compressors and converters to aid in the development of 16-bit assembly programs
