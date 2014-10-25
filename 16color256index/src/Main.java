@@ -1,3 +1,5 @@
+import org.apache.commons.io.FilenameUtils;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,6 +13,15 @@ public class Main {
             return;
         }
 
-        BufferedImage sourceImage = ImageIO.read(new File(args[0]));
+        try {
+            BufferedImage sourceImage = ImageIO.read(new File(args[0]));
+        } catch (IOException e) {
+            System.out.println("Cannot read '" + args[0] + "'");
+            return;
+        }
+
+        String baseFilename = FilenameUtils.removeExtension(args[0]);
+        System.out.println(args[0]);
+        System.out.println(baseFilename);
     }
 }
