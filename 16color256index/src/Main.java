@@ -25,8 +25,8 @@ public class Main {
         }
 
         String baseFilename = FilenameUtils.removeExtension(args[0]);
-        System.out.println(args[0]);
-        System.out.println(baseFilename);
+        //System.out.println(args[0]);
+        //System.out.println(baseFilename);
 
         ArrayList<Byte> outputData = new ArrayList<Byte>();
         ArrayList<Byte> uncompressedData = new ArrayList<Byte>();
@@ -52,11 +52,11 @@ public class Main {
                 uncompressedData.add((byte) uncompressedPalette.indexOf(pixel));
             }
 
-        for (Color color : uncompressedPalette) {
+        /*for (Color color : uncompressedPalette) {
             System.out.println(color.toString());
-        }
+        }*/
 
-        System.out.println();
+        /*System.out.println();
 
         int rgbCounter = 1;
         for (Byte rgbValue : outputPalette) {
@@ -77,7 +77,7 @@ public class Main {
                 System.out.print(String.format("%x", uncompressedData.get(y * sourceImage.getHeight() + x)));
             }
             System.out.println();
-        }
+        }*/
 
         byte compressedByte;
 
@@ -88,13 +88,13 @@ public class Main {
             outputData.add(compressedByte);
         }
 
-        System.out.println();
+        /*System.out.println();
 
         for (int y = 0; y < sourceImage.getHeight() / 2; y++) {
             for (int x = 0; x < sourceImage.getWidth() / 2; x++) {
                 System.out.print(String.format("%x", outputData.get(y * (sourceImage.getHeight() / 2) + x)));
             }
             System.out.println();
-        }
+        }*/
     }
 }
