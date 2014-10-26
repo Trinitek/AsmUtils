@@ -71,5 +71,30 @@ public class Main {
                 rgbCounter = 1;
             }
         }
+
+        for (int y = 0; y < sourceImage.getHeight(); y++) {
+            for (int x = 0; x < sourceImage.getWidth(); x++) {
+                System.out.print(String.format("%x", uncompressedData.get(y * sourceImage.getHeight() + x)));
+            }
+            System.out.println();
+        }
+
+        byte compressedByte;
+
+        for (int i = 0; i < uncompressedData.size(); i += 2) {
+            //noinspection RedundantCast
+            compressedByte = (byte) (uncompressedData.get(i) << 4);
+            compressedByte += uncompressedData.get(i + 1);
+            outputData.add(compressedByte);
+        }
+
+        System.out.println();
+
+        for (int y = 0; y < sourceImage.getHeight() / 2; y++) {
+            for (int x = 0; x < sourceImage.getWidth() / 2; x++) {
+                System.out.print(String.format("%x", outputData.get(y * (sourceImage.getHeight() / 2) + x)));
+            }
+            System.out.println();
+        }
     }
 }
