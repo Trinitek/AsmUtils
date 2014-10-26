@@ -3,8 +3,7 @@ import org.apache.commons.io.FilenameUtils;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Main {
@@ -96,5 +95,51 @@ public class Main {
             }
             System.out.println();
         }*/
+
+        String paletteFilename = baseFilename + ".pal";
+        DataOutputStream paletteFileStream;
+        try {
+            paletteFileStream = new DataOutputStream(new FileOutputStream(paletteFilename));
+        } catch (FileNotFoundException fileNotFound) {
+            System.out.println("Can't write to " + paletteFilename + "; can't open or create file");
+            return;
+        } catch (SecurityException security) {
+            System.out.println("Can't write to " + paletteFilename + "; operating system security manager denies write permission");
+            return;
+        }
+
+        String imageFilename = baseFilename + ".pxl";
+        DataOutputStream imageFileStream;
+        try {
+            imageFileStream = new DataOutputStream(new FileOutputStream(imageFilename));
+        } catch (FileNotFoundException fileNotFound) {
+            System.out.println("Can't write to " + imageFilename + "; can't open or create file");
+            return;
+        } catch (SecurityException security) {
+            System.out.println("Can't write to " + imageFilename + "; operating system security manager denies write permission");
+            return;
+        }
+
+        System.out.println("Writing palette data to " + paletteFilename + "...");
+        try {
+            for (Byte data : outputPalette) {
+                paletteFileStream.writeByte(data);
+            }
+        } catch (IOException io) {
+            System.out.println("An error occurred when writing to " + paletteFilename + " - " + io.getMessage());
+            return;
+        }
+
+        System.out.println("Writing image data to " + imageFilename + "...");
+        try {
+            for (Byte data : outputData) {
+                imageFileStream.writeByte(data);
+            }
+        } catch (IOException io) {
+            System.out.println("An error occurred when writing to " + imageFilename + " - " + io.getMessage());
+            return;
+        }
+
+        System.out.println("Operation completed successfully");
     }
 }
