@@ -44,7 +44,7 @@ exit:
 	ret
 
 palette:
-	file 'byterapers.pal'
+	file 'image.pal'
 
 image:
-	file 'byterapers.pxl'
+	file 'image.pxl'
