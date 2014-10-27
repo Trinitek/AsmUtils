@@ -14,3 +14,13 @@ To run these JAR files, make sure Java is in your system PATH variable, and inse
 > `<filename>` - image file to convert
 
 > Outputs two files: a file containing an RGB palette index, and a file containing the compressed image
+
+
+`256color256index.jar <filename>`
+
+> Extracts the pixel data and palette of an image with no more than 256 colors
+
+> `<filename>` - image file to convert
+
+> Outputs two files: a file containing at the most 256 RGB palette indexes, and a file containing the image data
+
