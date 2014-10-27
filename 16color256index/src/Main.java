@@ -24,8 +24,6 @@ public class Main {
         }
 
         String baseFilename = FilenameUtils.removeExtension(args[0]);
-        //System.out.println(args[0]);
-        //System.out.println(baseFilename);
 
         ArrayList<Byte> outputData = new ArrayList<Byte>();
         ArrayList<Byte> uncompressedData = new ArrayList<Byte>();
@@ -51,35 +49,9 @@ public class Main {
                 uncompressedData.add((byte) uncompressedPalette.indexOf(pixel));
             }
 
-        /*for (Color color : uncompressedPalette) {
-            System.out.println(color.toString());
-        }*/
-
-        /*System.out.println();
-
-        int rgbCounter = 1;
-        for (Byte rgbValue : outputPalette) {
-            if (rgbCounter == 1) {
-                System.out.print(" R=" + String.format("%x", rgbValue));
-                rgbCounter++;
-            } else if (rgbCounter == 2) {
-                System.out.print(" G=" + String.format("%x", rgbValue));
-                rgbCounter++;
-            } else {
-                System.out.println(" B=" + String.format("%x", rgbValue));
-                rgbCounter = 1;
-            }
-        }
-
-        for (int y = 0; y < sourceImage.getHeight(); y++) {
-            for (int x = 0; x < sourceImage.getWidth(); x++) {
-                System.out.print(String.format("%x", uncompressedData.get(y * sourceImage.getHeight() + x)));
-            }
-            System.out.println();
-        }*/
-
         byte compressedByte;
 
+        // Squeeze two pixels into one byte: leftmost pixel in the high nibble, rightmost in the low nibble
         for (int i = 0; i < uncompressedData.size(); i += 2) {
             //noinspection RedundantCast
             compressedByte = (byte) (uncompressedData.get(i) << 4);
@@ -87,15 +59,7 @@ public class Main {
             outputData.add(compressedByte);
         }
 
-        /*System.out.println();
-
-        for (int y = 0; y < sourceImage.getHeight() / 2; y++) {
-            for (int x = 0; x < sourceImage.getWidth() / 2; x++) {
-                System.out.print(String.format("%x", outputData.get(y * (sourceImage.getHeight() / 2) + x)));
-            }
-            System.out.println();
-        }*/
-
+        // Create or open the file to which to write the palette data
         String paletteFilename = baseFilename + ".pal";
         DataOutputStream paletteFileStream;
         try {
@@ -108,6 +72,7 @@ public class Main {
             return;
         }
 
+        // Create or open the file to which to write the compressed image data
         String imageFilename = baseFilename + ".pxl";
         DataOutputStream imageFileStream;
         try {
@@ -120,6 +85,7 @@ public class Main {
             return;
         }
 
+        // Write palette data to file
         System.out.println("Writing palette data to " + paletteFilename + "...");
         try {
             for (Byte data : outputPalette) {
@@ -130,6 +96,7 @@ public class Main {
             return;
         }
 
+        // Write compressed image data to file
         System.out.println("Writing image data to " + imageFilename + "...");
         try {
             for (Byte data : outputData) {
