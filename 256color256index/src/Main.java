@@ -26,18 +26,17 @@ public class Main {
         String baseFilename = FilenameUtils.removeExtension(args[0]);
 
         ArrayList<Byte> outputData = new ArrayList<Byte>();
-        ArrayList<Byte> uncompressedData = new ArrayList<Byte>();
         ArrayList<Byte> outputPalette = new ArrayList<Byte>();
-        ArrayList<Color> uncompressedPalette = new ArrayList<Color>();
+        ArrayList<Color> rawPalette = new ArrayList<Color>();
         Color pixel;
 
         for (int y = 0; y < sourceImage.getHeight(); y++)
             for (int x = 0; x < sourceImage.getWidth(); x++) {
-                // Add color to the uncompressed palette
+                // Add color to the raw palette containing Color objects
                 // If the color is a duplicate to one that already exists, do not add it
                 pixel = new Color(sourceImage.getRGB(x, y));
-                if (!uncompressedPalette.contains(pixel)) {
-                    uncompressedPalette.add(pixel);
+                if (!rawPalette.contains(pixel)) {
+                    rawPalette.add(pixel);
 
                     // Add color to the output palette
                     outputPalette.add((byte) pixel.getRed());
@@ -45,19 +44,9 @@ public class Main {
                     outputPalette.add((byte) pixel.getBlue());
                 }
 
-                // Add the index number of the palette entry to the compressed data array
-                uncompressedData.add((byte) uncompressedPalette.indexOf(pixel));
+                // Add the index number of the palette entry to the output image data array
+                outputData.add((byte) rawPalette.indexOf(pixel));
             }
-
-        byte compressedByte;
-
-        // Squeeze two pixels into one byte: leftmost pixel in the high nibble, rightmost in the low nibble
-        for (int i = 0; i < uncompressedData.size(); i += 2) {
-            //noinspection RedundantCast
-            compressedByte = (byte) (uncompressedData.get(i) << 4);
-            compressedByte += uncompressedData.get(i + 1);
-            outputData.add(compressedByte);
-        }
 
         // Create or open the file to which to write the palette data
         String paletteFilename = baseFilename + ".pal";
