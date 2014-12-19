@@ -25,10 +25,7 @@ public class Main {
 
         String baseFilename = FilenameUtils.removeExtension(args[0]);
 
-        //ArrayList<Byte> outputData = new ArrayList<Byte>();
-        //ArrayList<Byte> uncompressedData = new ArrayList<Byte>();
-        //ArrayList<Byte> outputPalette = new ArrayList<Byte>();
-        //ArrayList<Color> uncompressedPalette = new ArrayList<Color>();
+        ArrayList<Byte> outputData = new ArrayList<Byte>();
         ArrayList<Boolean> uncompressedData = new ArrayList<Boolean>();
         Color pixel;
 
@@ -41,32 +38,30 @@ public class Main {
                 if (averageColor < 0) {
                     uncompressedData.add(true);
                 } else uncompressedData.add(false);
-
-                // Add the index number of the palette entry to the compressed data array
-                uncompressedData.add((byte) uncompressedPalette.indexOf(pixel));
             }
 
-        byte compressedByte;
+        byte compressedByte = 0;
+        byte uncompressedByte;
+        byte bitIndex = 0;
 
         // Squeeze two pixels into one byte: leftmost pixel in the high nibble, rightmost in the low nibble
-        for (int i = 0; i < uncompressedData.size(); i += 2) {
+        /*for (int i = 0; i < uncompressedData.size(); i += 2) {
             //noinspection RedundantCast
             compressedByte = (byte) (uncompressedData.get(i) << 4);
             compressedByte += uncompressedData.get(i + 1);
             outputData.add(compressedByte);
-        }
+        }*/
 
-        // Create or open the file to which to write the palette data
-        String paletteFilename = baseFilename + ".pal";
-        DataOutputStream paletteFileStream;
-        try {
-            paletteFileStream = new DataOutputStream(new FileOutputStream(paletteFilename));
-        } catch (FileNotFoundException fileNotFound) {
-            System.out.println("Can't write to " + paletteFilename + "; can't open or create file");
-            return;
-        } catch (SecurityException security) {
-            System.out.println("Can't write to " + paletteFilename + "; operating system security manager denies write permission");
-            return;
+        for (Boolean selectedPixel : uncompressedData) {
+
+            uncompressedByte = selectedPixel ? (byte) 1 : (byte) 0;
+            uncompressedByte = (byte) (uncompressedByte << bitIndex);
+            compressedByte = (byte) (compressedByte | uncompressedByte);
+
+            if (bitIndex == 7) {
+                bitIndex = 0;
+                outputData.add(compressedByte);
+            } else bitIndex++;
         }
 
         // Create or open the file to which to write the compressed image data
@@ -79,17 +74,6 @@ public class Main {
             return;
         } catch (SecurityException security) {
             System.out.println("Can't write to " + imageFilename + "; operating system security manager denies write permission");
-            return;
-        }
-
-        // Write palette data to file
-        System.out.println("Writing palette data to " + paletteFilename + "...");
-        try {
-            for (Byte data : outputPalette) {
-                paletteFileStream.writeByte(data);
-            }
-        } catch (IOException io) {
-            System.out.println("An error occurred when writing to " + paletteFilename + " - " + io.getMessage());
             return;
         }
 
