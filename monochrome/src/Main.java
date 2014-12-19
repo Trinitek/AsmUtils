@@ -31,11 +31,9 @@ public class Main {
 
         for (int y = 0; y < sourceImage.getHeight(); y++)
             for (int x = 0; x < sourceImage.getWidth(); x++) {
-                // If an RGB value has an average value that is gray or brighter, make that TRUE
-                // Otherwise, make that FALSE
+                // If a pixel is black, make it TRUE
                 pixel = new Color(sourceImage.getRGB(x, y));
-                int averageColor = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
-                if (averageColor < 0) {
+                if (pixel.equals(Color.BLACK)) {
                     uncompressedData.add(true);
                 } else uncompressedData.add(false);
             }
@@ -44,23 +42,18 @@ public class Main {
         byte uncompressedByte;
         byte bitIndex = 0;
 
-        // Squeeze two pixels into one byte: leftmost pixel in the high nibble, rightmost in the low nibble
-        /*for (int i = 0; i < uncompressedData.size(); i += 2) {
-            //noinspection RedundantCast
-            compressedByte = (byte) (uncompressedData.get(i) << 4);
-            compressedByte += uncompressedData.get(i + 1);
-            outputData.add(compressedByte);
-        }*/
-
-        for (Boolean selectedPixel : uncompressedData) {
+        // Squeeze 8 pixels into one byte, MSB first, LSB last
+        for (int i = 0; i < uncompressedData.size(); i++) {
+            Boolean selectedPixel = uncompressedData.get(i);
 
             uncompressedByte = selectedPixel ? (byte) 1 : (byte) 0;
-            uncompressedByte = (byte) (uncompressedByte << bitIndex);
+            uncompressedByte = (byte) (uncompressedByte << 7 - bitIndex);
             compressedByte = (byte) (compressedByte | uncompressedByte);
 
-            if (bitIndex == 7) {
+            if ((bitIndex == 7) || i == uncompressedData.size() - 1) {
                 bitIndex = 0;
                 outputData.add(compressedByte);
+                compressedByte = 0;
             } else bitIndex++;
         }
 
