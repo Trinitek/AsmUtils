@@ -24,3 +24,10 @@ To run these JAR files, make sure Java is in your system PATH variable, and inse
 
 > Outputs two files: a file containing at the most 256 RGB palette indexes, and a file containing the image data
 
+`monochrome.jar <filename>`
+
+> Compresses a black and white image into a string of compressed bits running left to right, top to bottom, with the most significant bit as the leading bit.
+
+> `<filename>` - image file to convert
+
+> Outputs one file: a file containing the compressed image
